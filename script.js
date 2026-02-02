@@ -8,8 +8,19 @@ class QRCodeGenerator {
         this.initializeElements();
         this.bindEvents();
         this.updateDotSizeValue(); // Initialize dot size display
-        this.applyPreset('professional'); // Set default preset to match user's image
+        this.setDefaultStyles();
         this.generateQRCode(); // Generate initial QR code
+    }
+    
+    setDefaultStyles() {
+        this.bgColorInput.value = '#F4F1EA';
+        this.fgColorInput.value = '#3D3D3D';
+        this.cornerStyleSelect.value = 'rounded';
+        this.dotStyleSelect.value = 'circle';
+        this.dotSizeInput.value = '70'; // Increased default dot size for better scanning
+        this.updateColorValue('bg');
+        this.updateColorValue('fg');
+        this.updateDotSizeValue();
     }
     
     initializeElements() {
@@ -31,6 +42,9 @@ class QRCodeGenerator {
         this.imageSizeValue = document.getElementById('image-size-value');
         this.imageControls = document.getElementById('image-controls');
         
+        // Preset buttons
+        this.presetButtons = document.querySelectorAll('.preset-btn');
+
         // New style elements
         this.cornerStyleSelect = document.getElementById('corner-style');
         this.dotStyleSelect = document.getElementById('dot-style');
@@ -40,8 +54,6 @@ class QRCodeGenerator {
         this.gradientEndInput = document.getElementById('gradient-end');
         this.gradientDirectionSelect = document.getElementById('gradient-direction');
         
-        // Preset buttons
-        this.presetButtons = document.querySelectorAll('.preset-btn');
     }
     
     bindEvents() {
@@ -84,15 +96,6 @@ class QRCodeGenerator {
         });
     }
     
-    toggleGradient() {
-        if (this.enableGradientCheckbox.checked) {
-            this.gradientControls.style.display = 'grid';
-        } else {
-            this.gradientControls.style.display = 'none';
-        }
-        this.generateQRCode();
-    }
-    
     applyPreset(presetName) {
         // Remove active class from all buttons
         this.presetButtons.forEach(btn => btn.classList.remove('active'));
@@ -109,14 +112,14 @@ class QRCodeGenerator {
                 gradient: false
             },
             professional: {
-                bgColor: '#000000',
-                fgColor: '#ffffff',
+                bgColor: '#F4F1EA',
+                fgColor: '#3D3D3D',
                 cornerStyle: 'rounded',
                 dotStyle: 'circle',
                 gradient: false
             },
             modern: {
-                bgColor: '#f8f9fa',
+                bgColor: '#ffffff',
                 fgColor: '#495057',
                 cornerStyle: 'rounded',
                 dotStyle: 'rounded',
@@ -188,10 +191,21 @@ class QRCodeGenerator {
         }
     }
     
+
+
+    toggleGradient() {
+        if (this.enableGradientCheckbox.checked) {
+            this.gradientControls.style.display = 'grid';
+        } else {
+            this.gradientControls.style.display = 'none';
+        }
+        this.generateQRCode();
+    }
+    
     drawStyledQRCode(qrModel, options) {
         const ctx = this.canvas.getContext('2d');
         const moduleCount = qrModel.getModuleCount();
-        const cellSize = Math.floor(options.size / (moduleCount + 4));
+        const cellSize = Math.floor(options.size / (moduleCount + 8)); // Increased margin for better scanning
         const margin = (options.size - (moduleCount * cellSize)) / 2;
         
         // Clear canvas
@@ -223,16 +237,19 @@ class QRCodeGenerator {
         
         ctx.fillStyle = fillStyle;
         
-        // First, draw the complete finder patterns as solid merged shapes
-        this.drawFinderPatterns(ctx, qrModel, moduleCount, cellSize, margin, options.cornerStyle, fillStyle, options.bgColor);
-        
-        // Then draw the individual data modules (excluding finder pattern areas)
+        // Draw all modules first to ensure proper QR structure
         for (let row = 0; row < moduleCount; row++) {
             for (let col = 0; col < moduleCount; col++) {
-                if (qrModel.isDark(row, col) && !this.isFinderPattern(row, col, moduleCount)) {
+                if (qrModel.isDark(row, col)) {
                     const x = margin + col * cellSize;
                     const y = margin + row * cellSize;
-                    this.drawModule(ctx, x, y, cellSize, options.dotStyle, fillStyle, options.dotSize);
+                    
+                    // Use different styling for finder patterns vs data modules
+                    if (this.isFinderPattern(row, col, moduleCount)) {
+                        this.drawFinderPattern(ctx, x, y, cellSize, options.cornerStyle, fillStyle);
+                    } else {
+                        this.drawModule(ctx, x, y, cellSize, options.dotStyle, fillStyle, options.dotSize);
+                    }
                 }
             }
         }
@@ -307,34 +324,35 @@ class QRCodeGenerator {
         
         switch (style) {
             case 'rounded':
-                // Heavily rounded corners for the large finder patterns
-                this.drawRoundedRect(ctx, x, y, cellSize, cellSize, cellSize * 0.35);
+                // Less rounded for better scanning
+                this.drawRoundedRect(ctx, x, y, cellSize, cellSize, cellSize * 0.15);
                 break;
             case 'extra-rounded':
-                // Extra rounded for even more circular appearance
-                this.drawRoundedRect(ctx, x, y, cellSize, cellSize, cellSize * 0.45);
+                // Moderately rounded for scanning compatibility
+                this.drawRoundedRect(ctx, x, y, cellSize, cellSize, cellSize * 0.25);
                 break;
             case 'dots':
                 this.drawCircle(ctx, x + cellSize/2, y + cellSize/2, cellSize * 0.4);
                 break;
             default:
+                // Square is most reliable for scanning
                 ctx.fillRect(x, y, cellSize, cellSize);
         }
     }
     
     drawModule(ctx, x, y, cellSize, style, fillStyle, dotSizePercent = 45) {
         ctx.fillStyle = fillStyle;
-        const dotSize = dotSizePercent / 100; // Convert percentage to decimal
+        const dotSize = Math.max(dotSizePercent / 100, 0.6); // Minimum 60% size for better scanning
         
         switch (style) {
             case 'rounded':
-                // Heavily rounded squares that appear almost circular for small dots
+                // Less rounded for better scanning
                 const padding = cellSize * (1 - dotSize) / 2;
                 const size = cellSize * dotSize;
-                this.drawRoundedRect(ctx, x + padding, y + padding, size, size, size * 0.5);
+                this.drawRoundedRect(ctx, x + padding, y + padding, size, size, size * 0.2);
                 break;
             case 'circle':
-                // Perfect spherical dots like in the reference image
+                // Perfect spherical dots
                 this.drawCircle(ctx, x + cellSize/2, y + cellSize/2, cellSize * dotSize * 0.5);
                 break;
             case 'diamond':
@@ -343,6 +361,7 @@ class QRCodeGenerator {
                 this.drawDiamond(ctx, x + diamondPadding, y + diamondPadding, diamondSize);
                 break;
             default:
+                // Square dots - most reliable for scanning
                 const squarePadding = cellSize * (1 - dotSize) / 2;
                 const squareSize = cellSize * dotSize;
                 ctx.fillRect(x + squarePadding, y + squarePadding, squareSize, squareSize);
@@ -436,6 +455,8 @@ class QRCodeGenerator {
             return;
         }
         
+
+        
         const url = this.urlInput.value.trim();
         
         if (!url) {
@@ -448,9 +469,12 @@ class QRCodeGenerator {
         // Validate URL
         if (!this.isValidURL(url)) {
             this.urlDisplay.textContent = 'Please enter a valid URL';
+            this.urlDisplay.classList.add('error');
             this.canvas.style.display = 'none';
             this.downloadBtn.style.display = 'none';
             return;
+        } else {
+            this.urlDisplay.classList.remove('error');
         }
         
         try {
@@ -465,6 +489,7 @@ class QRCodeGenerator {
             this.canvas.width = size;
             this.canvas.height = size;
             
+<<<<<<< HEAD
             // Generate QR code using our local library with fallback error correction
             const qrCore = new QRCodeCore();
             let qrModel;
@@ -492,6 +517,11 @@ class QRCodeGenerator {
             if (!qrModel) {
                 throw new Error(`Unable to generate QR code: URL may be too long. ${lastError?.message || ''}`);
             }
+=======
+            // Generate QR code using our local library with high error correction for better scanning
+            const qrCore = new QRCodeCore();
+            const qrModel = qrCore.generateQR(url, qrCore.ERROR_CORRECT_H);
+>>>>>>> ea97537d04da234338851a38a1527f2448027755
             
             // Calculate cell size based on canvas size and QR module count
             const moduleCount = qrModel.getModuleCount();
@@ -529,6 +559,7 @@ class QRCodeGenerator {
             
         } catch (error) {
             console.error('Error generating QR code:', error);
+<<<<<<< HEAD
             
             // More helpful error messages
             if (url.length > 500) {
@@ -537,6 +568,10 @@ class QRCodeGenerator {
                 this.urlDisplay.textContent = `Error generating QR code: ${error.message}. Please try a shorter URL.`;
             }
             
+=======
+            this.urlDisplay.textContent = 'Error generating QR code. Please try again.';
+            this.urlDisplay.classList.add('error');
+>>>>>>> ea97537d04da234338851a38a1527f2448027755
             this.canvas.style.display = 'none';
             this.downloadBtn.style.display = 'none';
         }
@@ -587,14 +622,7 @@ class QRCodeGenerator {
             new URL(string);
             return true;
         } catch (_) {
-            // Try adding protocol if missing
-            try {
-                new URL('https://' + string);
-                this.urlInput.value = 'https://' + string;
-                return true;
-            } catch (_) {
-                return false;
-            }
+            return false;
         }
     }
     

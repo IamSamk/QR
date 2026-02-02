@@ -12,120 +12,24 @@
         <div class="generator-section">
             <div class="input-section">
                 <div class="input-group">
-                    <label for="url-input">Enter URL:</label>
+                    <label for="url-input">Enter URL</label>
                     <input type="text" id="url-input" placeholder="https://example.com" value="https://google.com">
                 </div>
-                
-                <div class="customization-section">
-                    <h3>Customization Options</h3>
-                    
-                    <div class="preset-section">
-                        <label>Quick Presets:</label>
-                        <div class="preset-buttons">
-                            <button class="preset-btn" data-preset="classic">Classic</button>
-                            <button class="preset-btn" data-preset="professional">Professional</button>
-                            <button class="preset-btn" data-preset="modern">Modern</button>
-                            <button class="preset-btn" data-preset="neon">Neon</button>
-                            <button class="preset-btn" data-preset="vintage">Vintage</button>
-                            <button class="preset-btn" data-preset="minimal">Minimal</button>
-                            <button class="preset-btn" data-preset="dark">Dark Mode</button>
-                            <button class="preset-btn" data-preset="creative">Creative</button>
-                        </div>
-                    </div>
-                    
-                    <div class="color-controls">
-                        <div class="color-group">
-                            <label for="bg-color">Background Color:</label>
-                            <input type="color" id="bg-color" value="#ffffff">
-                            <span class="color-value" id="bg-color-value">#ffffff</span>
-                        </div>
-                        
-                        <div class="color-group">
-                            <label for="fg-color">Pattern Color:</label>
-                            <input type="color" id="fg-color" value="#000000">
-                            <span class="color-value" id="fg-color-value">#000000</span>
-                        </div>
-                    </div>
-                    
-                    <div class="size-control">
-                        <label for="qr-size">QR Code Size:</label>
-                        <input type="range" id="qr-size" min="200" max="800" value="400">
-                        <span id="size-value">400px</span>
-                    </div>
-                    
-                    <div class="size-control">
-                        <label for="dot-size">Dot Size:</label>
-                        <input type="range" id="dot-size" min="20" max="100" value="45">
-                        <span id="dot-size-value">45%</span>
-                    </div>
-                    
-                    <div class="style-options">
-                        <label>QR Code Style:</label>
-                        <div class="style-controls">
-                            <div class="style-group">
-                                <label for="corner-style">Corner Style:</label>
-                                <select id="corner-style">
-                                    <option value="square">Square</option>
-                                    <option value="rounded">Rounded</option>
-                                    <option value="extra-rounded">Extra Rounded</option>
-                                    <option value="dots">Dots</option>
-                                </select>
-                            </div>
-                            
-                            <div class="style-group">
-                                <label for="dot-style">Dot Style:</label>
-                                <select id="dot-style">
-                                    <option value="square">Square</option>
-                                    <option value="rounded">Rounded</option>
-                                    <option value="circle">Circle</option>
-                                    <option value="diamond">Diamond</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gradient-section">
-                        <div class="gradient-toggle">
-                            <label>
-                                <input type="checkbox" id="enable-gradient">
-                                Enable Gradient
-                            </label>
-                        </div>
-                        <div class="gradient-controls" id="gradient-controls" style="display: none;">
-                            <div class="color-group">
-                                <label for="gradient-start">Gradient Start:</label>
-                                <input type="color" id="gradient-start" value="#000000">
-                            </div>
-                            <div class="color-group">
-                                <label for="gradient-end">Gradient End:</label>
-                                <input type="color" id="gradient-end" value="#333333">
-                            </div>
-                            <div class="style-group">
-                                <label for="gradient-direction">Direction:</label>
-                                <select id="gradient-direction">
-                                    <option value="to right">Left to Right</option>
-                                    <option value="to bottom">Top to Bottom</option>
-                                    <option value="45deg">Diagonal</option>
-                                    <option value="radial">Radial</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="center-image-section">
-                        <label for="center-image">Center Image (optional):</label>
-                        <input type="file" id="center-image" accept="image/*">
-                        <div class="image-controls" id="image-controls" style="display: none;">
-                            <label for="image-size">Image Size:</label>
-                            <input type="range" id="image-size" min="10" max="30" value="20">
-                            <span id="image-size-value">20%</span>
-                        </div>
+                <div class="preset-section">
+                    <label>Quick Presets:</label>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="classic">Classic</button>
+                        <button class="preset-btn" data-preset="professional">Professional</button>
+                        <button class="preset-btn" data-preset="modern">Modern</button>
+                        <button class="preset-btn" data-preset="neon">Neon</button>
+                        <button class="preset-btn" data-preset="vintage">Vintage</button>
+                        <button class="preset-btn" data-preset="minimal">Minimal</button>
+                        <button class="preset-btn" data-preset="dark">Dark Mode</button>
+                        <button class="preset-btn" data-preset="creative">Creative</button>
                     </div>
                 </div>
-                
-                <button id="generate-btn">Generate QR Code</button>
-                <button id="download-btn" style="display: none;">Download QR Code</button>
-                <button id="clear-image-btn" style="display: none;">Remove Center Image</button>
+                <button id="generate-btn">Generate</button>
+                <button id="download-btn" style="display: none;">Download</button>
             </div>
             
             <div class="output-section">
@@ -134,23 +38,102 @@
                 </div>
                 <div id="url-display"></div>
             </div>
+
+            <div class="customization-section">
+                <h3>Customization</h3>
+                
+                <div class="color-controls">
+                    <div class="color-group">
+                        <label for="bg-color">Background Color:</label>
+                        <input type="color" id="bg-color" value="#ffffff">
+                        <span class="color-value" id="bg-color-value">#ffffff</span>
+                    </div>
+                    
+                    <div class="color-group">
+                        <label for="fg-color">Pattern Color:</label>
+                        <input type="color" id="fg-color" value="#000000">
+                        <span class="color-value" id="fg-color-value">#000000</span>
+                    </div>
+                </div>
+                
+                <div class="size-control">
+                    <label for="qr-size">QR Code Size:</label>
+                    <input type="range" id="qr-size" min="200" max="800" value="400">
+                    <span id="size-value">400px</span>
+                </div>
+                
+                <div class="size-control">
+                    <label for="dot-size">Dot Size:</label>
+                    <input type="range" id="dot-size" min="20" max="100" value="70">
+                    <span id="dot-size-value">70%</span>
+                </div>
+                
+                <div class="style-options">
+                    <label>QR Code Style:</label>
+                    <div class="style-controls">
+                        <div class="style-group">
+                            <label for="corner-style">Corner Style:</label>
+                            <select id="corner-style">
+                                <option value="square">Square</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="extra-rounded">Extra Rounded</option>
+                                <option value="dots">Dots</option>
+                            </select>
+                        </div>
+                        
+                        <div class="style-group">
+                            <label for="dot-style">Dot Style:</label>
+                            <select id="dot-style">
+                                <option value="square">Square</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="circle">Circle</option>
+                                <option value="diamond">Diamond</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gradient-section">
+                    <div class="gradient-toggle">
+                        <label>
+                            <input type="checkbox" id="enable-gradient">
+                            Enable Gradient
+                        </label>
+                    </div>
+                    <div class="gradient-controls" id="gradient-controls" style="display: none;">
+                        <div class="color-group">
+                            <label for="gradient-start">Gradient Start:</label>
+                            <input type="color" id="gradient-start" value="#000000">
+                        </div>
+                        <div class="color-group">
+                            <label for="gradient-end">Gradient End:</label>
+                            <input type="color" id="gradient-end" value="#333333">
+                        </div>
+                        <div class="style-group">
+                            <label for="gradient-direction">Direction:</label>
+                            <select id="gradient-direction">
+                                <option value="to right">Left to Right</option>
+                                <option value="to bottom">Top to Bottom</option>
+                                <option value="45deg">Diagonal</option>
+                                <option value="radial">Radial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="center-image-section">
+                    <label for="center-image">Center Image (optional)</label>
+                    <input type="file" id="center-image" accept="image/*">
+                    <div class="image-controls" id="image-controls" style="display: none;">
+                        <label for="image-size">Image Size:</label>
+                        <input type="range" id="image-size" min="10" max="30" value="20">
+                        <span id="image-size-value">20%</span>
+                    </div>
+                </div>
+                 <button id="clear-image-btn" style="display: none;">Remove Image</button>
+            </div>
         </div>
         
-        <div class="info-section">
-            <h3>Features:</h3>
-            <ul>
-                <li>✅ 8 Professional Presets (Classic, Professional, Modern, Neon, etc.)</li>
-                <li>✅ Custom background and pattern colors</li>
-                <li>✅ Gradient support with multiple directions</li>
-                <li>✅ Advanced styling (Rounded corners, Circles, Diamonds)</li>
-                <li>✅ Adjustable QR code size</li>
-                <li>✅ Center image overlay support</li>
-                <li>✅ Real-time preview</li>
-                <li>✅ Download as PNG</li>
-                <li>✅ Works completely offline</li>
-                <li>✅ Mobile responsive design</li>
-            </ul>
-        </div>
     </div>
     
     <!-- Local QR Code Library -->
