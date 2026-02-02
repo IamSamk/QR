@@ -465,9 +465,33 @@ class QRCodeGenerator {
             this.canvas.width = size;
             this.canvas.height = size;
             
-            // Generate QR code using our local library
+            // Generate QR code using our local library with fallback error correction
             const qrCore = new QRCodeCore();
-            const qrModel = qrCore.generateQR(url);
+            let qrModel;
+            
+            // Try different error correction levels (L = lowest, M = medium, Q, H = highest)
+            // Lower error correction = more data capacity
+            const errorLevels = [
+                qrCore.ERROR_CORRECT_L,  // Lowest (7% correction)
+                qrCore.ERROR_CORRECT_M,  // Medium (15% correction)
+                qrCore.ERROR_CORRECT_Q,  // Quartile (25% correction)
+                qrCore.ERROR_CORRECT_H   // High (30% correction)
+            ];
+            
+            let lastError;
+            for (const errorLevel of errorLevels) {
+                try {
+                    qrModel = qrCore.generateQR(url, errorLevel);
+                    break; // Success!
+                } catch (error) {
+                    lastError = error;
+                    continue; // Try next level
+                }
+            }
+            
+            if (!qrModel) {
+                throw new Error(`Unable to generate QR code: URL may be too long. ${lastError?.message || ''}`);
+            }
             
             // Calculate cell size based on canvas size and QR module count
             const moduleCount = qrModel.getModuleCount();
@@ -505,7 +529,14 @@ class QRCodeGenerator {
             
         } catch (error) {
             console.error('Error generating QR code:', error);
-            this.urlDisplay.textContent = 'Error generating QR code. Please try again.';
+            
+            // More helpful error messages
+            if (url.length > 500) {
+                this.urlDisplay.textContent = `Error: URL is too long (${url.length} characters). QR codes work best with URLs under 500 characters. Try using a URL shortener.`;
+            } else {
+                this.urlDisplay.textContent = `Error generating QR code: ${error.message}. Please try a shorter URL.`;
+            }
+            
             this.canvas.style.display = 'none';
             this.downloadBtn.style.display = 'none';
         }
