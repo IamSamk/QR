@@ -489,18 +489,17 @@ class QRCodeGenerator {
             this.canvas.width = size;
             this.canvas.height = size;
             
-<<<<<<< HEAD
             // Generate QR code using our local library with fallback error correction
             const qrCore = new QRCodeCore();
             let qrModel;
             
-            // Try different error correction levels (L = lowest, M = medium, Q, H = highest)
-            // Lower error correction = more data capacity
+            // Try different error correction levels (H = highest first for best scanning, then fallback to lower)
+            // Lower error correction = more data capacity for longer URLs
             const errorLevels = [
-                qrCore.ERROR_CORRECT_L,  // Lowest (7% correction)
-                qrCore.ERROR_CORRECT_M,  // Medium (15% correction)
+                qrCore.ERROR_CORRECT_H,  // High (30% correction) - best scanning
                 qrCore.ERROR_CORRECT_Q,  // Quartile (25% correction)
-                qrCore.ERROR_CORRECT_H   // High (30% correction)
+                qrCore.ERROR_CORRECT_M,  // Medium (15% correction)
+                qrCore.ERROR_CORRECT_L   // Lowest (7% correction) - max data capacity
             ];
             
             let lastError;
@@ -517,11 +516,6 @@ class QRCodeGenerator {
             if (!qrModel) {
                 throw new Error(`Unable to generate QR code: URL may be too long. ${lastError?.message || ''}`);
             }
-=======
-            // Generate QR code using our local library with high error correction for better scanning
-            const qrCore = new QRCodeCore();
-            const qrModel = qrCore.generateQR(url, qrCore.ERROR_CORRECT_H);
->>>>>>> ea97537d04da234338851a38a1527f2448027755
             
             // Calculate cell size based on canvas size and QR module count
             const moduleCount = qrModel.getModuleCount();
