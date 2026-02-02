@@ -553,7 +553,6 @@ class QRCodeGenerator {
             
         } catch (error) {
             console.error('Error generating QR code:', error);
-<<<<<<< HEAD
             
             // More helpful error messages
             if (url.length > 500) {
@@ -561,11 +560,8 @@ class QRCodeGenerator {
             } else {
                 this.urlDisplay.textContent = `Error generating QR code: ${error.message}. Please try a shorter URL.`;
             }
-            
-=======
-            this.urlDisplay.textContent = 'Error generating QR code. Please try again.';
             this.urlDisplay.classList.add('error');
->>>>>>> ea97537d04da234338851a38a1527f2448027755
+            
             this.canvas.style.display = 'none';
             this.downloadBtn.style.display = 'none';
         }
